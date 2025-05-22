@@ -38,6 +38,7 @@ interface CanvasProps {
   selectedBlock: Block | null;
   setSelectedBlock: React.Dispatch<React.SetStateAction<Block | null>>;
   toolMode: 'select' | 'brush' | 'eraser';
+  searchTerm: string;
 }
 
 const MIN_SIZE = 50;
@@ -48,6 +49,7 @@ const Canvas: React.FC<CanvasProps> = ({
   selectedBlock,
   setSelectedBlock,
   toolMode,
+  searchTerm,
 }) => {
   const { theme } = useTheme();
   const transformerRef = useRef<TransformerType>(null);
@@ -210,22 +212,27 @@ const Canvas: React.FC<CanvasProps> = ({
 
   const renderBlock = useCallback((block: Block) => {
     const isSelected = selectedBlock?.id === block.id;
+    // Lógica de destaque de busca
+    const lowerSearchTerm = searchTerm.toLowerCase();
+    const isMatch = searchTerm.length > 0 && 
+                    ((block.type === 'text' && block.text?.toLowerCase().includes(lowerSearchTerm)) ||
+                     (block.type !== 'text' && block.id.toLowerCase().includes(lowerSearchTerm))); // Exemplo: busca por ID para outros tipos
+
     const commonProps = {
       key: block.id,
       id: block.id,
       x: block.x,
       y: block.y,
-      draggable: true,
-      onDragEnd: handleDragEnd,
-      onClick: () => setSelectedBlock(block),
+      draggable: toolMode === 'select', // Só arrastar no modo seleção
+      onClick: () => toolMode === 'select' && setSelectedBlock(block),
       onTransformEnd: handleTransformEnd,
       cornerRadius: 8,
-      shadowColor: isSelected ? theme.primary : 'transparent',
-      shadowBlur: 10,
-      shadowOpacity: 0.5,
+      shadowColor: isSelected ? theme.primary : (isMatch ? theme.secondary : 'transparent'),
+      shadowBlur: isSelected ? 10 : (isMatch ? 8 : 0),
+      shadowOpacity: isSelected ? 0.5 : (isMatch ? 0.4 : 0),
       shadowOffset: { x: 0, y: 0 },
       ref: isSelected ? selectedNodeRef : undefined,
-      opacity: block.opacity ?? 1,
+      opacity: isMatch && searchTerm.length > 0 ? 1 : (searchTerm.length > 0 ? 0.4 : (block.opacity ?? 1)), // Destaca ou esmaece
       rotation: block.rotation ?? 0,
       stroke: block.stroke,
       strokeWidth: block.strokeWidth,
@@ -264,7 +271,7 @@ const Canvas: React.FC<CanvasProps> = ({
           />
         );
     }
-  }, [selectedBlock, theme, handleDragEnd, handleTransformEnd, setSelectedBlock]);
+  }, [selectedBlock, theme, handleDragEnd, handleTransformEnd, setSelectedBlock, toolMode, searchTerm]);
 
   return (
     <CanvasContainer theme={theme} key={drawingVersion}>

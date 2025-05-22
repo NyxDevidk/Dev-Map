@@ -85,6 +85,11 @@ const AppContent: React.FC = () => {
   const [historyIndex, setHistoryIndex] = useState(0);
   const [selectedBlock, setSelectedBlock] = useState<Block | null>(null);
   const [toolMode, setToolMode] = useState<'select' | 'brush' | 'eraser'>('select');
+  const [searchTerm, setSearchTerm] = useState('');
+
+  const handleSearchChange = (value: string) => {
+    setSearchTerm(value);
+  };
 
   const addToHistory = (newBlocks: Block[]) => {
     const newHistory = history.slice(0, historyIndex + 1);
@@ -189,6 +194,8 @@ const AppContent: React.FC = () => {
         setToolMode={setToolMode}
         onExportProject={handleExportProject}
         onImportProject={handleImportProject}
+        searchTerm={searchTerm}
+        onSearchChange={handleSearchChange}
       />
       <MainContent>
         <Canvas
@@ -197,6 +204,7 @@ const AppContent: React.FC = () => {
           selectedBlock={selectedBlock}
           setSelectedBlock={setSelectedBlock}
           toolMode={toolMode}
+          searchTerm={searchTerm}
         />
         <PropertiesPanel
           selectedBlock={selectedBlock}

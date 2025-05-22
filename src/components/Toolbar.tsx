@@ -1,7 +1,7 @@
 import React from 'react';
 import styled from 'styled-components';
 import { useTheme } from '../contexts/ThemeContext';
-import { FaCube, FaFont, FaImage, FaPaintBrush, FaEraser, FaUndo, FaRedo, FaLink, FaSun, FaMoon } from 'react-icons/fa';
+import { FaCube, FaFont, FaImage, FaPaintBrush, FaEraser, FaUndo, FaRedo, FaLink, FaSun, FaMoon, FaSearch } from 'react-icons/fa';
 
 const ToolbarContainer = styled.div<{ theme: any }>`
   display: flex;
@@ -48,6 +48,25 @@ const ThemeToggle = styled(ToolButton)`
   font-size: 18px;
 `;
 
+const Input = styled.input<{ theme: any }>`
+  width: 100%;
+  padding: 10px 12px;
+  border: 1.5px solid ${props => props.theme.border};
+  border-radius: 7px;
+  background: rgba(40,40,50,0.95);
+  color: ${props => props.theme.text};
+  font-size: 15px;
+  transition: all 0.2s;
+  margin-bottom: 0;
+
+  &:focus {
+    outline: none;
+    border-color: ${props => props.theme.primary};
+    box-shadow: 0 0 0 2px ${props => props.theme.primary}33;
+    background: rgba(60,60,80,1);
+  }
+`;
+
 interface ToolbarProps {
   onAddBlock?: () => void;
   onAddText?: () => void;
@@ -59,6 +78,8 @@ interface ToolbarProps {
   setToolMode: (mode: 'select' | 'brush' | 'eraser') => void;
   onExportProject?: () => void;
   onImportProject?: (file: File) => void;
+  searchTerm: string;
+  onSearchChange: (value: string) => void;
 }
 
 const Toolbar: React.FC<ToolbarProps> = ({
@@ -72,6 +93,8 @@ const Toolbar: React.FC<ToolbarProps> = ({
   setToolMode,
   onExportProject,
   onImportProject,
+  searchTerm,
+  onSearchChange,
 }) => {
   const { theme, isDarkMode, toggleTheme } = useTheme();
 
@@ -112,6 +135,17 @@ const Toolbar: React.FC<ToolbarProps> = ({
           }
         }} />
       </ToolButton>
+      <div style={{ marginLeft: 'auto', position: 'relative' }}>
+        <FaSearch style={{ position: 'absolute', left: 12, top: '50%', transform: 'translateY(-50%)', color: theme.text }} />
+        <Input
+          theme={theme}
+          type="text"
+          placeholder="Buscar blocos..."
+          value={searchTerm}
+          onChange={(e: React.ChangeEvent<HTMLInputElement>) => onSearchChange && onSearchChange(e.target.value)}
+          style={{ paddingLeft: 36, minWidth: 200 }}
+        />
+      </div>
       <ThemeToggle theme={theme} onClick={toggleTheme} title="Alternar Tema">
         {isDarkMode ? FaSun({}) : FaMoon({})}
       </ThemeToggle>
