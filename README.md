@@ -38,6 +38,17 @@ Um organizador visual de projetos, diagramas e ideias, feito em React com styled
 - react-konva
 - react-icons
 
+## Deploy no GitHub Pages
+
+Para fazer o deploy do aplicativo para o GitHub Pages, rode o comando:
+
+```bash
+npm run deploy
+```
+
+Após o deploy, o site estará disponível em:
+[https://NyxDevidk.github.io/Dev-Map](https://NyxDevidk.github.io/Dev-Map)
+
 ## Melhorias futuras
 - Mini-mapa de navegação
 - Busca de blocos

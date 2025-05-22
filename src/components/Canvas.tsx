@@ -8,7 +8,14 @@ import { useTheme } from '../contexts/ThemeContext';
 
 const CanvasContainer = styled.div<{ theme: any }>`
   flex: 1;
+  /* background-color: ${props => props.theme.surface}; */
   background-color: ${props => props.theme.surface};
+  background-image: ${props => 
+    props.theme.name === 'dark' 
+      ? `radial-gradient(#3a3a3a 1px, transparent 1px), radial-gradient(#3a3a3a 1px, ${props.theme.surface} 1px)`
+      : `radial-gradient(#cccccc 1px, transparent 1px), radial-gradient(#cccccc 1px, ${props.theme.surface} 1px)`};
+  background-size: 20px 20px;
+  background-position: 0 0, 10px 10px;
   overflow: hidden;
   transition: all 0.3s ease;
   position: relative;
@@ -229,14 +236,16 @@ const Canvas: React.FC<CanvasProps> = ({
       onTransformEnd: handleTransformEnd,
       cornerRadius: 8,
       shadowColor: isSelected ? theme.primary : (isMatch ? theme.secondary : 'transparent'),
-      shadowBlur: isSelected ? 10 : (isMatch ? 8 : 0),
-      shadowOpacity: isSelected ? 0.5 : (isMatch ? 0.4 : 0),
+      shadowBlur: isSelected ? 16 : (isMatch ? 8 : 0),
+      shadowOpacity: isSelected ? 0.6 : (isMatch ? 0.4 : 0),
       shadowOffset: { x: 0, y: 0 },
       ref: isSelected ? selectedNodeRef : undefined,
-      opacity: isMatch && searchTerm.length > 0 ? 1 : (searchTerm.length > 0 ? 0.4 : (block.opacity ?? 1)), // Destaca ou esmaece
+      opacity: isMatch && searchTerm.length > 0 ? 1 : (searchTerm.length > 0 ? 0.4 : (block.opacity ?? 1)),
       rotation: block.rotation ?? 0,
       stroke: block.stroke,
       strokeWidth: block.strokeWidth,
+      strokeEnabled: isSelected || (block.type !== 'brush' && (block.strokeWidth ?? 1) > 0),
+      dash: isSelected ? [10, 5] : undefined,
     };
 
     switch (block.type) {
@@ -248,13 +257,13 @@ const Canvas: React.FC<CanvasProps> = ({
             text={block.text || ''}
             fontSize={block.fontSize || 16}
             padding={8}
-            background={isSelected ? theme.secondary : 'transparent'}
+            background={isSelected ? theme.secondary + '40' : 'transparent'}
           />
         );
       case 'image':
         return block.imageUrl ? (
           <Image
-            {...{ ...commonProps, fill: undefined }}
+            {...{ ...commonProps, fill: undefined, stroke: isSelected ? theme.primary : undefined, strokeWidth: isSelected ? 2 : 0, dash: isSelected ? [10, 5] : undefined }}
             width={block.width}
             height={block.height}
             image={(() => { const img = new window.Image(); img.src = block.imageUrl!; return img; })()}
