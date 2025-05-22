@@ -136,7 +136,7 @@ const Toolbar: React.FC<ToolbarProps> = ({
         }} />
       </ToolButton>
       <div style={{ marginLeft: 'auto', position: 'relative' }}>
-        <FaSearch style={{ position: 'absolute', left: 12, top: '50%', transform: 'translateY(-50%)', color: theme.text }} />
+        {FaSearch({ style: { position: 'absolute', left: 12, top: '50%', transform: 'translateY(-50%)', color: theme.text } })}
         <Input
           theme={theme}
           type="text"

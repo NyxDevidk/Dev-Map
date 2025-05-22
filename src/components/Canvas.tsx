@@ -271,7 +271,7 @@ const Canvas: React.FC<CanvasProps> = ({
           />
         );
     }
-  }, [selectedBlock, theme, handleDragEnd, handleTransformEnd, setSelectedBlock, toolMode, searchTerm]);
+  }, [selectedBlock, theme, handleTransformEnd, setSelectedBlock, toolMode, searchTerm]);
 
   return (
     <CanvasContainer theme={theme} key={drawingVersion}>
