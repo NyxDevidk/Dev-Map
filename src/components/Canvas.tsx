@@ -224,6 +224,7 @@ const Canvas: React.FC<CanvasProps> = ({
       x: block.x,
       y: block.y,
       draggable: toolMode === 'select', // Só arrastar no modo seleção
+      onDragEnd: toolMode === 'select' ? handleDragEnd : undefined, // Aplicar onDragEnd APENAS no modo seleção
       onClick: () => toolMode === 'select' && setSelectedBlock(block),
       onTransformEnd: handleTransformEnd,
       cornerRadius: 8,
@@ -271,7 +272,7 @@ const Canvas: React.FC<CanvasProps> = ({
           />
         );
     }
-  }, [selectedBlock, theme, handleTransformEnd, setSelectedBlock, toolMode, searchTerm]);
+  }, [selectedBlock, theme, handleDragEnd, handleTransformEnd, setSelectedBlock, toolMode, searchTerm]);
 
   return (
     <CanvasContainer theme={theme} key={drawingVersion}>
